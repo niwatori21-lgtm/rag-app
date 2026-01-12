@@ -59,7 +59,9 @@ if st.sidebar.button("🧹 会話をクリア"):
     st.session_state.messages = []
 
 # ===== Gemini クライアント =====
-client = genai.Client(api_key="AIzaSyByualT2Sc4QuuF6ffPrjCCsrq7k5dNs80")  # ← AI で始まるキーを入れる
+# ★ 正しい初期化方法（Client() は存在しないためエラーになる）
+genai.configure(api_key="YOUR_API_KEY_HERE")
+model = genai.GenerativeModel(model_name)
 
 # ===== タイトル =====
 st.markdown(
@@ -106,11 +108,8 @@ if prompt:
 
     contents = system_prompt + "\n\nユーザー: " + prompt
 
-    response = client.models.generate_content(
-        model=model_name,
-        contents=contents
-    )
-
+    # ★ 正しい生成方法
+    response = model.generate_content(contents)
     reply = response.text
 
     st.session_state.messages.append({"role": "assistant", "content": reply})
